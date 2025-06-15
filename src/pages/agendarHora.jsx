@@ -260,11 +260,11 @@ export default function FormularioReserva() {
 
                 {/* Paso 2 */}
                 {paso === 2 && (
-                  <div className="card p-4 mb-4">
-                    <h4>2. Selecciona un día para ver disponibilidad ({especialidad})</h4>
+                <div className="card p-4 mb-4">
+                  <h4>2. Selecciona un día para ver disponibilidad ({especialidad})</h4>
 
-                    {/* Navegación de días */}
-                    <div className="d-flex justify-content-between align-items-center mb-3">
+                  <div className="d-flex flex-column gap-3 mb-4">
+                    <div className="d-flex justify-content-center align-items-center gap-3">
                       <button
                         className="btn btn-outline-secondary"
                         onClick={() => setOffsetDias(Math.max(0, offsetDias - 5))}
@@ -272,17 +272,9 @@ export default function FormularioReserva() {
                       >
                         ← Anterior
                       </button>
-                      <button
-                        className="btn btn-outline-secondary"
-                        onClick={() => setOffsetDias(offsetDias + 5)}
-                      >
-                        Siguiente →
-                      </button>
-                    </div>
-
-                    {/* Selección de días - Centrado */}
-                    <div className="d-flex flex-wrap gap-2 mb-4 justify-content-center">
-                      {fechas
+                      
+                      <div className="d-flex flex-wrap gap-2">
+                                              {fechas
                       .filter((fecha) => {
                         const dia = new Date(fecha).getDay();
                         return dia !== 0 && dia !== 6; // Excluye domingos (0) y sábados (6)
@@ -305,79 +297,86 @@ export default function FormularioReserva() {
                           })}
                         </button>
                       ))}
+                      </div>
+                      
+                      <button
+                        className="btn btn-outline-secondary"
+                        onClick={() => setOffsetDias(offsetDias + 5)}
+                      >
+                        Siguiente →
+                      </button>
                     </div>
+                  </div>
 
-                    {/* Mostrar profesionales solo si se seleccionó un día */}
-                    {diaSeleccionado && (
-                      <>
-                        <h5 className="mb-3 text-center">
-                          Profesionales disponibles para {new Date(diaSeleccionado).toLocaleDateString('es-CL')}
-                        </h5>
+                  {diaSeleccionado && (
+                    <>
+                      <h5 className="mb-3 text-center">
+                        Profesionales disponibles para {new Date(diaSeleccionado).toLocaleDateString('es-CL')}
+                      </h5>
 
-                        <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-                          {profesionales[especialidad].map((prof) => (
-                            <div key={prof} className="col">
-                              <div className="card h-100">
-                                <div className="card-body text-center">
-                                  <strong className="d-block mb-2">{prof}</strong>
-                                  <div className="d-flex flex-wrap gap-2 justify-content-center">
-                                    {horariosBase.map((hora) => {
-                                      const ocupada = estaOcupada(prof, hora, diaSeleccionado);
-                                      
-                                      return (
-                                        <button
-                                          key={`${prof}-${hora}`}
-                                          className={`btn btn-sm ${
-                                            profesional === prof && horaSeleccionada === hora
-                                              ? 'btn-primary'
-                                              : ocupada 
-                                                ? 'btn-danger text-white'
-                                                : 'btn-outline-primary'
-                                          }`}
-                                          onClick={() => {
-                                            if (!ocupada) {
-                                              setProfesional(prof);
-                                              setHoraSeleccionada(hora);
-                                            }
-                                          }}
-                                          disabled={ocupada}
-                                          title={ocupada ? "Horario no disponible" : "Seleccionar horario"}
-                                        >
-                                          {hora}
-                                        </button>
-                                      );
-                                    })}
-                                  </div>
+                      <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                        {profesionales[especialidad].map((prof) => (
+                          <div key={prof} className="col">
+                            <div className="card h-100">
+                              <div className="card-body text-center">
+                                <strong className="d-block mb-2">{prof}</strong>
+                                <div className="d-flex flex-wrap gap-2 justify-content-center">
+                                  {horariosBase.map((hora) => {
+                                    const ocupada = estaOcupada(prof, hora);
+                                    
+                                    return (
+                                      <button
+                                        key={`${prof}-${hora}`}
+                                        className={`btn btn-sm ${
+                                          profesional === prof && horaSeleccionada === hora
+                                            ? 'btn-primary'
+                                            : ocupada 
+                                              ? 'btn-danger text-white'
+                                              : 'btn-outline-primary'
+                                        }`}
+                                        onClick={() => {
+                                          if (!ocupada) {
+                                            setProfesional(prof);
+                                            setHoraSeleccionada(hora);
+                                          }
+                                        }}
+                                        disabled={ocupada}
+                                      >
+                                        {hora} {ocupada && '(Ocupado)'}
+                                      </button>
+                                    );
+                                  })}
                                 </div>
                               </div>
                             </div>
-                          ))}
-                        </div>
+                          </div>
+                        ))}
+                      </div>
+                    </>
+                  )}
 
-                        {/* Botones de navegación */}
-                        <div className="d-flex justify-content-between mt-4">
-                          <button
-                            className="btn btn-secondary"
-                            onClick={() => {
-                              setPaso(1);
-                              setProfesional('');
-                              setHoraSeleccionada('');
-                            }}
-                          >
-                            ← Volver
-                          </button>
-                          <button
-                            className="btn btn-primary"
-                            disabled={!profesional || !horaSeleccionada}
-                            onClick={() => setPaso(3)}
-                          >
-                            Continuar →
-                          </button>
-                        </div>
-                      </>
-                    )}
+                  {/* Botones de navegación - ahora siempre visibles */}
+                  <div className="d-flex justify-content-between mt-4">
+                    <button
+                      className="btn btn-secondary"
+                      onClick={() => {
+                        setPaso(1);
+                        setProfesional('');
+                        setHoraSeleccionada('');
+                      }}
+                    >
+                      ← Volver
+                    </button>
+                    <button
+                      className="btn btn-primary"
+                      disabled={!profesional || !horaSeleccionada}
+                      onClick={() => setPaso(3)}
+                    >
+                      Continuar →
+                    </button>
                   </div>
-                )}
+                </div>
+              )}
 
                 {/* Paso 3 - Confirmación */}
                 {paso === 3 && (
