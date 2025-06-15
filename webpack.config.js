@@ -1,10 +1,11 @@
-/* eslint-disable max-lines-per-function */
+const path = require('path') // <== necesitas importar esto
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 module.exports = (_, argv) => ({
   entry: './src/index.js',
   output: {
+    path: path.resolve(__dirname, 'build'), // <== AÑADIDO: carpeta de salida
     filename: '[name].[contenthash].js',
     publicPath: '/'
   },

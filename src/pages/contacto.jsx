@@ -1,14 +1,14 @@
 import React from 'react';
+import { Link } from 'react-router-dom'; // Faltaba esta línea
 import contactoImagen from '../assets/contacto.jpg';
 
 const Contacto = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
-    
+
     const formData = new FormData(event.target);
     const formValues = Object.fromEntries(formData.entries());
-    
-    // Verificar que todos los campos estén completos
+
     const isFormValid = Object.values(formValues).every(
       value => value.trim() !== ''
     );
@@ -18,22 +18,44 @@ const Contacto = () => {
       return;
     }
 
-    // Mostrar mensaje de confirmación
     alert('Gracias por contactarnos. Nos pondremos en contacto con usted en brevedad.');
     event.target.reset();
   };
 
   return (
     <>
-      {/* Contenido de la página */}
-      <section className="hero-quienes-somos">
-        <div className="hero-overlay text-white">
+      {/* Migas de pan mejoradas visualmente */}
+      <div className="bg-light py-2 border-bottom mb-3">
+        <div className="container px-4">
+          <nav aria-label="breadcrumb">
+            <ol className="breadcrumb mb-0">
+              <li className="breadcrumb-item">
+                <Link to="/" className="text-decoration-none text-primary">
+                  🏠 Inicio
+                </Link>
+              </li>
+              <li className="breadcrumb-item active text-secondary" aria-current="page">
+                Contacto
+              </li>
+            </ol>
+          </nav>
+        </div>
+      </div>
+
+
+      {/* Sección Hero */}
+      <section className="hero-quienes-somos bg-light py-5">
+        <div className="container">
           <h1 className="display-5 fw-bold">Contacto</h1>
+          <p className="lead">Si tienes alguna consulta, no dudes en contactarnos. Estamos aquí para ayudarte.</p>
         </div>
       </section>
+
+
       <br /><br />
 
-      <div className="container mt-5">
+      
+      <div className="container mt-0">
         <div className="row">
           <div className="col-md-6">
             <div className="form-container">
@@ -124,7 +146,8 @@ const Contacto = () => {
                     required
                   ></textarea>
                 </div>
-                <button type="submit" className="btn-enviar">
+                <br />
+                <button type="submit" className="btn-enviar" class="btn btn-primary"  >
                   Enviar
                 </button>
               </form>
