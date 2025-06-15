@@ -6,7 +6,6 @@ import solicitudesImg from '../assets/solicitudes.png';
 import tneImg from '../assets/tne.png';
 import { Link } from 'react-router-dom';
 
-
 const MiPerfil = () => {
   const { isLoggedIn } = useAuth();
 
@@ -66,8 +65,7 @@ const MiPerfil = () => {
         </div>
       </div>
 
-
-    <section className="hero-quienes-somos bg-light py-5">
+      <section className="hero-quienes-somos bg-light py-5">
         <div className="container">
           <h1 className="display-5 fw-bold">Mi perfil</h1>
           <p className="lead">Aquí puedes ver y editar tu información personal y académica.</p>
@@ -75,22 +73,22 @@ const MiPerfil = () => {
       </section>
     
     <div className="container my-5">
-      
-
       {/* PERFIL CENTRADO Y CON ANCHO IGUAL */}
       <div className="d-flex justify-content-center mb-5">
         <div className="card p-3 shadow-sm" style={{ maxWidth: '700px', width: '100%' }}>
           {editMode ? (
             <form className="d-flex flex-column">
               <h3 className="mb-3 fs-4 text-center">Editar Perfil</h3>
+              <p className="text-muted text-center mb-3">Solo puedes editar tu teléfono y dirección</p>
+              
               {[
-                { name: 'name', label: 'Nombre' },
-                { name: 'email', label: 'Email' },
-                { name: 'phone', label: 'Teléfono' },
-                { name: 'address', label: 'Dirección' },
-                { name: 'birthDate', label: 'Fecha de Nacimiento', type: 'date' },
-                { name: 'studentId', label: 'Matrícula' },
-                { name: 'career', label: 'Carrera' },
+                { name: 'name', label: 'Nombre', disabled: true },
+                { name: 'email', label: 'Email', disabled: true },
+                { name: 'phone', label: 'Teléfono', disabled: false },
+                { name: 'address', label: 'Dirección', disabled: false },
+                { name: 'birthDate', label: 'Fecha de Nacimiento', disabled: true },
+                { name: 'studentId', label: 'Matrícula', disabled: true },
+                { name: 'career', label: 'Carrera', disabled: true },
               ].map((field, index) => (
                 <div key={index} className="mb-2">
                   <label className="form-label fs-6">{field.label}:</label>
@@ -99,10 +97,12 @@ const MiPerfil = () => {
                     name={field.name}
                     value={tempData[field.name]}
                     onChange={handleInputChange}
-                    className="form-control form-control-sm"
+                    className={`form-control form-control-sm ${field.disabled ? 'bg-light' : ''}`}
+                    disabled={field.disabled}
                   />
                 </div>
               ))}
+              
               <div className="d-flex justify-content-end gap-2 mt-3">
                 <button type="button" onClick={handleCancel} className="btn btn-danger btn-sm">Cancelar</button>
                 <button type="button" onClick={handleSave} className="btn btn-success btn-sm">Guardar</button>
@@ -195,11 +195,7 @@ const MiPerfil = () => {
         ))}
       </div>
     </div>
-
-
     </>
-    
-    
   );
 };
 
