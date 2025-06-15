@@ -52,6 +52,8 @@ export default function FormularioReserva() {
   const [reservas, setReservas] = useState([]);
   const [mostrarReservas, setMostrarReservas] = useState(false);
   const [reservaConfirmada, setReservaConfirmada] = useState(false);
+  const [reservaAEliminar, setReservaAEliminar] = useState(null);
+  const [mostrarModalConfirmacion, setMostrarModalConfirmacion] = useState(false);
 
   const fechas = obtenerFechas(offsetDias, 5);
 
@@ -95,6 +97,8 @@ export default function FormularioReserva() {
 
   const cancelarReserva = (id) => {
     setReservas(reservas.filter(reserva => reserva.id !== id));
+    setMostrarModalConfirmacion(false);
+    setReservaAEliminar(null);
   };
 
   // Función para verificar si una hora está ocupada
@@ -110,6 +114,16 @@ export default function FormularioReserva() {
     );
     
     return noDisponible || reservaExistente;
+  };
+
+  const solicitarCancelarReserva = (reserva) => {
+    setReservaAEliminar(reserva);
+    setMostrarModalConfirmacion(true);
+  };
+
+  const cancelarEliminacion = () => {
+    setMostrarModalConfirmacion(false);
+    setReservaAEliminar(null);
   };
 
   return (
@@ -155,6 +169,38 @@ export default function FormularioReserva() {
           </button>
         </div>
 
+        {/* Modal de confirmación para eliminar reserva */}
+        {mostrarModalConfirmacion && reservaAEliminar && (
+          <div className="modal" style={{ display: 'block', backgroundColor: 'rgba(0,0,0,0.5)', position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 1050 }}>
+            <div className="modal-dialog modal-dialog-centered">
+              <div className="modal-content">
+                <div className="modal-header bg-warning">
+                  <h5 className="modal-title">Cancelar</h5>
+                  <button type="button" className="btn-close" onClick={cancelarEliminacion}></button>
+                </div>
+                <div className="modal-body">
+                  <p>¿Estás seguro de que deseas cancelar esta reserva?</p>
+                  <div className="alert alert-warning">
+                    <p><strong>Especialidad:</strong> {reservaAEliminar.especialidad}</p>
+                    <p><strong>Profesional:</strong> {reservaAEliminar.profesional}</p>
+                    <p><strong>Fecha:</strong> {new Date(reservaAEliminar.fecha).toLocaleDateString('es-CL')}</p>
+                    <p><strong>Hora:</strong> {reservaAEliminar.hora}</p>
+                  </div>
+                  <p className="text-danger"><strong>Esta acción no se puede deshacer.</strong></p>
+                </div>
+                <div className="modal-footer">
+                  <button type="button" className="btn btn-secondary" onClick={cancelarEliminacion}>
+                    No, mantener reserva
+                  </button>
+                  <button type="button" className="btn btn-danger" onClick={() => cancelarReserva(reservaAEliminar.id)}>
+                    Sí, cancelar reserva
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
         {mostrarReservas ? (
           <div className="card p-4">
             <h4>Mis Reservas</h4>
@@ -182,7 +228,7 @@ export default function FormularioReserva() {
                         <td>
                           <button 
                             className="btn btn-sm btn-danger"
-                            onClick={() => cancelarReserva(reserva.id)}
+                            onClick={() => solicitarCancelarReserva(reserva)}
                           >
                             Cancelar
                           </button>
@@ -322,7 +368,7 @@ export default function FormularioReserva() {
                                 <strong className="d-block mb-2">{prof}</strong>
                                 <div className="d-flex flex-wrap gap-2 justify-content-center">
                                   {horariosBase.map((hora) => {
-                                    const ocupada = estaOcupada(prof, hora);
+                                    const ocupada = estaOcupada(prof, hora, diaSeleccionado);
                                     
                                     return (
                                       <button

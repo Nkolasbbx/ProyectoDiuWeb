@@ -222,24 +222,29 @@ export default function FormularioReserva() {
                       </button>
                       
                       <div className="d-flex flex-wrap gap-2">
-                        {fechas.map((fecha) => (
-                          <button
-                            key={fecha}
-                            className={`btn ${
-                              diaSeleccionado === fecha ? 'btn-primary' : 'btn-outline-primary'
-                            }`}
-                            onClick={() => {
-                              setDiaSeleccionado(fecha);
-                              setFechaSeleccionada(fecha);
-                            }}
-                          >
-                            {new Date(fecha).toLocaleDateString('es-CL', {
-                              weekday: 'short',
-                              day: 'numeric',
-                              month: 'short',
-                            })}
-                          </button>
-                        ))}
+                                              {fechas
+                      .filter((fecha) => {
+                        const dia = new Date(fecha).getDay();
+                        return dia !== 0 && dia !== 6; // Excluye domingos (0) y sábados (6)
+                      })
+                      .map((fecha) => (
+                        <button
+                          key={fecha}
+                          className={`btn ${
+                            diaSeleccionado === fecha ? 'btn-primary' : 'btn-outline-primary'
+                          }`}
+                          onClick={() => {
+                            setDiaSeleccionado(fecha);
+                            setFechaSeleccionada(fecha);
+                          }}
+                        >
+                          {new Date(fecha).toLocaleDateString('es-CL', {
+                            weekday: 'short',
+                            day: 'numeric',
+                            month: 'short',
+                          })}
+                        </button>
+                      ))}
                       </div>
                       
                       <button
